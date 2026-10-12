@@ -1,6 +1,34 @@
 <!DOCTYPE html>
 <html style="margin:0;padding:0;height:100%;">
-<body style="margin:0;padding:0;height:100%;overflow:hidden;">
-<embed src="Chunhao%20Product%20Catalogue.pdf" width="100%" height="100vh" type="application/pdf">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Catalogue</title>
+<!-- 引用CDN的pdfjs，海外访问速度好，不需要额外上传文件 -->
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/build/pdf.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/web/viewer.min.css">
+</head>
+<body style="margin:0;padding:0;height:100vh;overflow:hidden;">
+<div id="pdf-viewer" style="width:100%;height:100%;"></div>
+<script>
+const pdfUrl = "Chunhao Product Catalogue.pdf";
+const pdfjsLib = window['pdfjs-dist/build/pdf'];
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/build/pdf.worker.min.js';
+
+const loadingTask = pdfjsLib.getDocument(pdfUrl);
+loadingTask.promise.then(function(pdf) {
+  pdf.getPage(1).then(function(page) {
+    const scale = 1.5;
+    const viewport = page.getViewport({scale: scale});
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+    document.getElementById('pdf-viewer').appendChild(canvas);
+    const renderContext = {canvasContext: context, viewport: viewport};
+    page.render(renderContext);
+  });
+});
+</script>
 </body>
 </html>
